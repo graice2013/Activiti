@@ -26,6 +26,7 @@ import org.apache.commons.lang3.StringUtils;
 
  * 
  */
+// 事件类型定义
 public enum ActivitiEventType {
 
   /**

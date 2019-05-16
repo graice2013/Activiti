@@ -325,7 +325,7 @@ import org.apache.ibatis.type.JdbcType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
+// vento: 定义并实现了大部分ProcessEngineConfiguration的功能函数
 public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfiguration {
 
   private static Logger log = LoggerFactory.getLogger(ProcessEngineConfigurationImpl.class);
@@ -852,6 +852,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   // buildProcessEngine
   // ///////////////////////////////////////////////////////
 
+  // 创建ProcessEngine
   @Override
   public ProcessEngine buildProcessEngine() {
     init();
@@ -877,6 +878,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     initHistoryLevel();
     initExpressionManager();
 
+    // 数据库初始化
     if (usingRelationalDatabase) {
       initDataSource();
     }
@@ -957,6 +959,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     }
   }
 
+  // enableVerboseExecutionTreeLogging设置，启动DebugCommandInvoker拦截器
   public void initCommandInvoker() {
     if (commandInvoker == null) {
       if (enableVerboseExecutionTreeLogging) {
@@ -966,7 +969,8 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
       }
     }
   }
-
+  
+  // 初始化，命令拦截器
   public void initCommandInterceptors() {
     if (commandInterceptors == null) {
       commandInterceptors = new ArrayList<CommandInterceptor>();
@@ -981,19 +985,23 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     }
   }
 
+  // 默认拦截器配置
   public Collection<? extends CommandInterceptor> getDefaultCommandInterceptors() {
     List<CommandInterceptor> interceptors = new ArrayList<CommandInterceptor>();
     interceptors.add(new LogInterceptor());
 
+    // 事务相关拦截器
     CommandInterceptor transactionInterceptor = createTransactionInterceptor();
     if (transactionInterceptor != null) {
       interceptors.add(transactionInterceptor);
     }
 
+    // 命令上下文相关拦截器
     if (commandContextFactory != null) {
       interceptors.add(new CommandContextInterceptor(commandContextFactory, this));
     }
 
+    // 事务上下文相关拦截器
     if (transactionContextFactory != null) {
       interceptors.add(new TransactionContextInterceptor(transactionContextFactory));
     }
@@ -1040,7 +1048,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
 
   // DataSource
   // ///////////////////////////////////////////////////////////////
-
+  // 数据源初始化
   public void initDataSource() {
     if (dataSource == null) {
       if (dataSourceJndiName != null) {
@@ -1051,12 +1059,14 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
         }
 
       } else if (jdbcUrl != null) {
+    	// jdbcDriver/jdbcUsername不为空  
         if ((jdbcDriver == null) || (jdbcUsername == null)) {
           throw new ActivitiException("DataSource or JDBC properties have to be specified in a process engine configuration");
         }
 
         log.debug("initializing datasource to db: {}", jdbcUrl);
 
+        // 返回ibatisl默认数据库连接池
         PooledDataSource pooledDataSource = new PooledDataSource(ReflectUtil.getClassLoader(), jdbcDriver, jdbcUrl, jdbcUsername, jdbcPassword);
 
         if (jdbcMaxActiveConnections > 0) {
@@ -1091,6 +1101,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
       }
     }
 
+    // 获取数据库类型
     if (databaseType == null) {
       initDatabaseType();
     }
@@ -2141,6 +2152,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     }
   }
 
+  // 事件监听日志配置
   public void initDatabaseEventLogging() {
     if (enableDatabaseEventLogging) {
       // Database event logging uses the default logging mechanism and adds

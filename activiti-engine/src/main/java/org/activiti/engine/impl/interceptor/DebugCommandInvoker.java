@@ -26,11 +26,13 @@ public class DebugCommandInvoker extends CommandInvoker {
   
   @Override
   public void executeOperation(Runnable runnable) {
+	// 是否为可执行操作  
     if (runnable instanceof AbstractOperation) {
       AbstractOperation operation = (AbstractOperation) runnable;
       
       if (operation.getExecution() != null) {
         logger.info("Execution tree while executing operation {} :", operation.getClass());
+        // ExecutionTreeUtil 树形打印输出
         logger.info("{}", System.lineSeparator() +  ExecutionTreeUtil.buildExecutionTree(operation.getExecution()));
       }
       

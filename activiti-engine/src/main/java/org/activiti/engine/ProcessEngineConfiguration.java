@@ -75,18 +75,22 @@ import java.util.Map;
  * @see ProcessEngines
 
  */
+//vento: 流程引擎配置处理类
 public abstract class ProcessEngineConfiguration {
 
+  // 启动时检查数据版本，发生不匹配抛异常， 上生产时使用
   /**
    * Checks the version of the DB schema against the library when the process engine is being created and throws an exception if the versions don't match.
    */
   public static final String DB_SCHEMA_UPDATE_FALSE = "false";
 
+  // 启动时创建数据库表结构，结束时删除表结构，作单元测试时
   /**
    * Creates the schema when the process engine is being created and drops the schema when the process engine is being closed.
    */
   public static final String DB_SCHEMA_UPDATE_CREATE_DROP = "create-drop";
 
+  // 启动时自动检查并更新数据库表，不存在会创建，开发环境时使用
   /**
    * Upon building of the process engine, a check is performed and an update of the schema is performed if it is necessary.
    */
@@ -100,6 +104,7 @@ public abstract class ProcessEngineConfiguration {
   protected String history = HistoryLevel.AUDIT.getKey();
   protected boolean asyncExecutorActivate;
 
+  // 集成邮件的配置
   protected String mailServerHost = "localhost";
   protected String mailServerUsername; // by default no name and password are provided, which
   protected String mailServerPassword; // means no authentication for mail server
@@ -111,6 +116,7 @@ public abstract class ProcessEngineConfiguration {
   protected Map<String, MailServerInfo> mailServers = new HashMap<String, MailServerInfo>();
   protected Map<String, String> mailSessionsJndi = new HashMap<String, String>();
 
+  // 数据库配置，默认h2
   protected String databaseType;
   protected String databaseSchemaUpdate = DB_SCHEMA_UPDATE_FALSE;
   protected String jdbcDriver = "org.h2.Driver";
@@ -131,11 +137,13 @@ public abstract class ProcessEngineConfiguration {
   protected DataSource dataSource;
   protected boolean transactionsExternallyManaged;
 
+  // JPA相关配置
   protected String jpaPersistenceUnitName;
   protected Object jpaEntityManagerFactory;
   protected boolean jpaHandleTransaction;
   protected boolean jpaCloseEntityManager;
 
+  // 异步执行器
   protected Clock clock;
   protected AsyncExecutor asyncExecutor;
   /**
@@ -204,7 +212,7 @@ public abstract class ProcessEngineConfiguration {
   /** use one of the static createXxxx methods instead */
   protected ProcessEngineConfiguration() {
   }
-
+  
   public abstract ProcessEngine buildProcessEngine();
 
   public static ProcessEngineConfiguration createProcessEngineConfigurationFromResourceDefault() {
@@ -215,6 +223,7 @@ public abstract class ProcessEngineConfiguration {
     return createProcessEngineConfigurationFromResource(resource, "processEngineConfiguration");
   }
 
+  // vento: 创建ProcessEngineCOnfiguration对象
   public static ProcessEngineConfiguration createProcessEngineConfigurationFromResource(String resource, String beanName) {
     return BeansConfigurationHelper.parseProcessEngineConfigurationFromResource(resource, beanName);
   }
@@ -231,6 +240,7 @@ public abstract class ProcessEngineConfiguration {
     return new StandaloneProcessEngineConfiguration();
   }
 
+  // vento: 基于内存数据库的引擎
   public static ProcessEngineConfiguration createStandaloneInMemProcessEngineConfiguration() {
     return new StandaloneInMemProcessEngineConfiguration();
   }

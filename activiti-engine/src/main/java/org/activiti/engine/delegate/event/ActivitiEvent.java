@@ -19,6 +19,7 @@ package org.activiti.engine.delegate.event;
 
  * 
  */
+// 事件定义
 public interface ActivitiEvent {
 
   /**

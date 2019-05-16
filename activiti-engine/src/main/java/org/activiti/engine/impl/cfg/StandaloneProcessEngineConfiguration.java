@@ -18,6 +18,7 @@ import org.activiti.engine.impl.interceptor.CommandInterceptor;
 /**
 
  */
+// vento: 独立部署运行，通过 new方式创建对象
 public class StandaloneProcessEngineConfiguration extends ProcessEngineConfigurationImpl {
 
   @Override

@@ -35,6 +35,7 @@ package org.activiti.engine;
  * precautions need to be taken.
  * 
  */
+// 流程引擎
 public interface ProcessEngine {
 
   /** the version of the activiti library */

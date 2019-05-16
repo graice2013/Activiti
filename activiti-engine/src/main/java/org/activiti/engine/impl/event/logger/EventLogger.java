@@ -58,12 +58,14 @@ public class EventLogger implements ActivitiEventListener {
 		initializeDefaultHandlers();
 	}
 	
+	// 事件监听日志
 	public EventLogger(Clock clock, ObjectMapper objectMapper) {
 		this();
 		this.clock = clock;
 		this.objectMapper = objectMapper;
 	}
 
+	// 事件类型
 	protected void initializeDefaultHandlers() {
 	  addEventHandler(ActivitiEventType.TASK_CREATED, TaskCreatedEventHandler.class);
 		addEventHandler(ActivitiEventType.TASK_COMPLETED, TaskCompletedEventHandler.class);
@@ -83,23 +85,27 @@ public class EventLogger implements ActivitiEventListener {
 		addEventHandler(ActivitiEventType.VARIABLE_UPDATED, VariableUpdatedEventHandler.class);
   }
 	
+	// 事件监听
 	@Override
 	public void onEvent(ActivitiEvent event) {
+		// 获取eventHandler
 		EventLoggerEventHandler eventHandler = getEventHandler(event);
 		if (eventHandler != null) {
 
 			// Events are flushed when command context is closed
 			CommandContext currentCommandContext = Context.getCommandContext();
+			// 是否有定义eventFlusher 属性
 			EventFlusher eventFlusher = (EventFlusher) currentCommandContext.getAttribute(EVENT_FLUSHER_KEY);
 			
 			if (eventFlusher == null) {
-				
+				// 没有定义，创建一个eventFlusher
 				eventFlusher = createEventFlusher();
 				if (eventFlusher == null) {
 					eventFlusher = new DatabaseEventFlusher(); // Default
 				}
 				currentCommandContext.addAttribute(EVENT_FLUSHER_KEY, eventFlusher);
 				
+				// 添加关闭时，监听事件
 				currentCommandContext.addCloseListener(eventFlusher);
 				currentCommandContext
 				    .addCloseListener(new CommandContextCloseListener() {

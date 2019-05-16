@@ -13,6 +13,7 @@ public class DatabaseEventFlusher extends AbstractEventFlusher {
 
   private static final Logger logger = LoggerFactory.getLogger(DatabaseEventFlusher.class);
 
+  // 事件监听，写入数据库
   @Override
   public void closing(CommandContext commandContext) {
     
